@@ -52,11 +52,6 @@ test_labels_onehot = one_hot(test_labels)
 
 
 def im2col(images, kernel_h, kernel_w, stride, pad=0):
-    """
-    Convert image batch to column matrix for convolution.
-    images: (n, c, h, w)
-    Returns: cols (n*out_h*out_w, c*kernel_h*kernel_w), out_h, out_w
-    """
     n, c, h, w = images.shape
     out_h = (h + 2*pad - kernel_h) // stride + 1
     out_w = (w + 2*pad - kernel_w) // stride + 1
@@ -72,11 +67,7 @@ def im2col(images, kernel_h, kernel_w, stride, pad=0):
     return cols, out_h, out_w
 
 def col2im(cols, shape, kernel_h, kernel_w, stride, pad=0):
-    """
-    Inverse of im2col.
-    cols: (n*out_h*out_w, c*kernel_h*kernel_w)
-    shape: (n, c, h, w) original input shape
-    """
+
     n, c, h, w = shape
     out_h = (h + 2*pad - kernel_h) // stride + 1
     out_w = (w + 2*pad - kernel_w) // stride + 1
@@ -110,6 +101,7 @@ def cross_entropy_loss(y_pred, y_true):
     return -np.mean(np.sum(y_true * np.log(y_pred + eps), axis=1))
 
 
+#Сверточный слой
 class Conv2D:
     def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0):
         self.in_channels = in_channels
@@ -117,7 +109,6 @@ class Conv2D:
         self.kernel_size = kernel_size
         self.stride = stride
         self.padding = padding
-        # Xavier initialization (for tanh)
         fan_in = in_channels * kernel_size * kernel_size
         fan_out = out_channels * kernel_size * kernel_size
         self.W = np.random.randn(out_channels, in_channels, kernel_size, kernel_size) * np.sqrt(2.0 / (fan_in + fan_out))
@@ -142,13 +133,15 @@ class Conv2D:
         n, c, out_h, out_w = dout.shape
         batch_size = n
         dout_flat = dout.transpose(0,2,3,1).reshape(-1, self.out_channels)
-        # Average gradients over batch
+
         self.dW = dout_flat.T.dot(self.cols).reshape(self.W.shape) / batch_size
         self.db = np.sum(dout_flat, axis=0) / batch_size
         dcols = dout_flat.dot(self.W.reshape(self.out_channels, -1))
         dx = col2im(dcols, self.x.shape, self.kernel_size, self.kernel_size, self.stride, self.padding)
         return dx
 
+
+#Класс среднего пуллинга
 class AvgPool2D:
     def __init__(self, pool_size=2, stride=2):
         self.pool_size = pool_size
@@ -178,6 +171,8 @@ class AvgPool2D:
                       j*self.stride:j*self.stride+self.pool_size] += dout[:, :, i, j][:, :, None, None] / (self.pool_size**2)
         return dx
 
+
+#Полносвязный слой
 class Dense:
     def __init__(self, in_features, out_features):
         # Xavier initialization
@@ -280,7 +275,7 @@ def train(model, X_train, y_train, X_test, y_test, epochs, batch_size, lr):
     test_accuracies = []
 
     for epoch in range(epochs):
-        # Shuffle
+
         perm = np.random.permutation(n)
         X_train = X_train[perm]
         y_train = y_train[perm]
@@ -322,7 +317,6 @@ train_losses, test_accuracies = train(model, X_train, y_train, X_test, y_test,
                                       epochs=10, batch_size=64, lr=0.01)
 print(f"Training time: {time()-start:.2f} seconds")
 
-# Plot results
 plt.figure(figsize=(12,4))
 plt.subplot(1,2,1)
 plt.plot(train_losses)
