@@ -517,106 +517,106 @@ train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=False)
 val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
-# class RNNModel(nn.Module):
-#     def __init__(self, input_size, hidden_size, output_size, num_layers=1):
-#         super().__init__()
-#         self.rnn = nn.RNN(input_size, hidden_size, num_layers, batch_first=True)
-#         self.fc = nn.Linear(hidden_size, output_size)
+class RNNModel(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size, num_layers=1):
+        super().__init__()
+        self.rnn = nn.RNN(input_size, hidden_size, num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_size, output_size)
 
-#     def forward(self, x):
-#         out, _ = self.rnn(x)
-#         out = out[:, -1, :]
-#         out = self.fc(out)
-#         return out
+    def forward(self, x):
+        out, _ = self.rnn(x)
+        out = out[:, -1, :]
+        out = self.fc(out)
+        return out
 
-# class GRUModel(nn.Module):
-#     def __init__(self, input_size, hidden_size, output_size, num_layers=1):
-#         super().__init__()
-#         self.gru = nn.GRU(input_size, hidden_size, num_layers, batch_first=True)
-#         self.fc = nn.Linear(hidden_size, output_size)
+class GRUModel(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size, num_layers=1):
+        super().__init__()
+        self.gru = nn.GRU(input_size, hidden_size, num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_size, output_size)
 
-#     def forward(self, x):
-#         out, _ = self.gru(x)
-#         out = out[:, -1, :]
-#         out = self.fc(out)
-#         return out
+    def forward(self, x):
+        out, _ = self.gru(x)
+        out = out[:, -1, :]
+        out = self.fc(out)
+        return out
 
-# class LSTMModel(nn.Module):
-#     def __init__(self, input_size, hidden_size, output_size, num_layers=1):
-#         super().__init__()
-#         self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
-#         self.fc = nn.Linear(hidden_size, output_size)
+class LSTMModel(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size, num_layers=1):
+        super().__init__()
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_size, output_size)
 
-#     def forward(self, x):
-#         out, _ = self.lstm(x)
-#         out = out[:, -1, :]
-#         out = self.fc(out)
-#         return out
+    def forward(self, x):
+        out, _ = self.lstm(x)
+        out = out[:, -1, :]
+        out = self.fc(out)
+        return out
 
-# def train_library_model(model, train_loader, val_loader, epochs=20, lr=0.001, print_every=5):
-#     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-#     model.to(device)
-#     criterion = nn.MSELoss()
-#     optimizer = optim.Adam(model.parameters(), lr=lr)
+def train_library_model(model, train_loader, val_loader, epochs=20, lr=0.001, print_every=5):
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model.to(device)
+    criterion = nn.MSELoss()
+    optimizer = optim.Adam(model.parameters(), lr=lr)
 
-#     train_losses = []
-#     val_losses = []
-#     best_val_loss = np.inf
-#     best_state = None
+    train_losses = []
+    val_losses = []
+    best_val_loss = np.inf
+    best_state = None
 
-#     for epoch in range(epochs):
-#         model.train()
-#         epoch_train_loss = 0
-#         for X_batch, y_batch in train_loader:
-#             X_batch, y_batch = X_batch.to(device), y_batch.to(device)
-#             optimizer.zero_grad()
-#             outputs = model(X_batch)
-#             loss = criterion(outputs, y_batch)
-#             loss.backward()
-#             optimizer.step()
-#             epoch_train_loss += loss.item() * X_batch.size(0)
-#         avg_train_loss = epoch_train_loss / len(train_loader.dataset)
-#         train_losses.append(avg_train_loss)
+    for epoch in range(epochs):
+        model.train()
+        epoch_train_loss = 0
+        for X_batch, y_batch in train_loader:
+            X_batch, y_batch = X_batch.to(device), y_batch.to(device)
+            optimizer.zero_grad()
+            outputs = model(X_batch)
+            loss = criterion(outputs, y_batch)
+            loss.backward()
+            optimizer.step()
+            epoch_train_loss += loss.item() * X_batch.size(0)
+        avg_train_loss = epoch_train_loss / len(train_loader.dataset)
+        train_losses.append(avg_train_loss)
 
-#         model.eval()
-#         epoch_val_loss = 0
-#         with torch.no_grad():
-#             for X_batch, y_batch in val_loader:
-#                 X_batch, y_batch = X_batch.to(device), y_batch.to(device)
-#                 outputs = model(X_batch)
-#                 loss = criterion(outputs, y_batch)
-#                 epoch_val_loss += loss.item() * X_batch.size(0)
-#         avg_val_loss = epoch_val_loss / len(val_loader.dataset)
-#         val_losses.append(avg_val_loss)
+        model.eval()
+        epoch_val_loss = 0
+        with torch.no_grad():
+            for X_batch, y_batch in val_loader:
+                X_batch, y_batch = X_batch.to(device), y_batch.to(device)
+                outputs = model(X_batch)
+                loss = criterion(outputs, y_batch)
+                epoch_val_loss += loss.item() * X_batch.size(0)
+        avg_val_loss = epoch_val_loss / len(val_loader.dataset)
+        val_losses.append(avg_val_loss)
 
-#         if avg_val_loss < best_val_loss:
-#             best_val_loss = avg_val_loss
-#             best_state = {k: v.cpu().clone() for k, v in model.state_dict().items()}
+        if avg_val_loss < best_val_loss:
+            best_val_loss = avg_val_loss
+            best_state = {k: v.cpu().clone() for k, v in model.state_dict().items()}
 
-#         if (epoch + 1) % print_every == 0:
-#             print(f"Epoch {epoch + 1}/{epochs}, Train Loss: {avg_train_loss:.6f}, Val Loss: {avg_val_loss:.6f}")
+        if (epoch + 1) % print_every == 0:
+            print(f"Epoch {epoch + 1}/{epochs}, Train Loss: {avg_train_loss:.6f}, Val Loss: {avg_val_loss:.6f}")
 
-#     if best_state:
-#         model.load_state_dict(best_state)
-#     return train_losses, val_losses
+    if best_state:
+        model.load_state_dict(best_state)
+    return train_losses, val_losses
 
-# print("\n" + "=" * 50)
-# print("Обучение библиотечной RNN")
-# rnn_lib = RNNModel(input_size, hidden_size, output_size)
-# rnn_lib_train, rnn_lib_val = train_library_model(rnn_lib, train_loader, val_loader, epochs=epochs_manual, lr=lr_lib,
-#                                                  print_every=2)
+print("\n" + "=" * 50)
+print("Обучение библиотечной RNN")
+rnn_lib = RNNModel(input_size, hidden_size, output_size)
+rnn_lib_train, rnn_lib_val = train_library_model(rnn_lib, train_loader, val_loader, epochs=epochs_manual, lr=lr_lib,
+                                                 print_every=2)
 
-# print("\n" + "=" * 50)
-# print("Обучение библиотечной GRU")
-# gru_lib = GRUModel(input_size, hidden_size, output_size)
-# gru_lib_train, gru_lib_val = train_library_model(gru_lib, train_loader, val_loader, epochs=epochs_manual, lr=lr_lib,
-#                                                  print_every=2)
+print("\n" + "=" * 50)
+print("Обучение библиотечной GRU")
+gru_lib = GRUModel(input_size, hidden_size, output_size)
+gru_lib_train, gru_lib_val = train_library_model(gru_lib, train_loader, val_loader, epochs=epochs_manual, lr=lr_lib,
+                                                 print_every=2)
 
-# print("\n" + "=" * 50)
-# print("Обучение библиотечной LSTM")
-# lstm_lib = LSTMModel(input_size, hidden_size, output_size)
-# lstm_lib_train, lstm_lib_val = train_library_model(lstm_lib, train_loader, val_loader, epochs=epochs_manual, lr=lr_lib,
-#                                                    print_every=2)
+print("\n" + "=" * 50)
+print("Обучение библиотечной LSTM")
+lstm_lib = LSTMModel(input_size, hidden_size, output_size)
+lstm_lib_train, lstm_lib_val = train_library_model(lstm_lib, train_loader, val_loader, epochs=epochs_manual, lr=lr_lib,
+                                                   print_every=2)
 
 def evaluate_manual(cell, X_test, y_test, is_lstm=False):
     preds = []
@@ -636,26 +636,26 @@ def evaluate_manual(cell, X_test, y_test, is_lstm=False):
         preds.append(y_pred.flatten()[0])
     return np.array(preds).reshape(-1, 1)
 
-# def evaluate_library(model, loader):
-#     device = next(model.parameters()).device
-#     model.eval()
-#     preds = []
-#     targets = []
-#     with torch.no_grad():
-#         for X_batch, y_batch in loader:
-#             X_batch = X_batch.to(device)
-#             outputs = model(X_batch)
-#             preds.append(outputs.cpu().numpy())
-#             targets.append(y_batch.numpy())
-#     return np.concatenate(preds), np.concatenate(targets)
+def evaluate_library(model, loader):
+    device = next(model.parameters()).device
+    model.eval()
+    preds = []
+    targets = []
+    with torch.no_grad():
+        for X_batch, y_batch in loader:
+            X_batch = X_batch.to(device)
+            outputs = model(X_batch)
+            preds.append(outputs.cpu().numpy())
+            targets.append(y_batch.numpy())
+    return np.concatenate(preds), np.concatenate(targets)
 
 y_pred_rnn_man = evaluate_manual(rnn_cell, X_test, y_test)
 y_pred_gru_man = evaluate_manual(gru_cell, X_test, y_test, is_lstm=False)
 y_pred_lstm_man = evaluate_manual(lstm_cell, X_test, y_test, is_lstm=True)
 
-# y_pred_rnn_lib, y_test_lib = evaluate_library(rnn_lib, test_loader)
-# y_pred_gru_lib, _ = evaluate_library(gru_lib, test_loader)
-# y_pred_lstm_lib, _ = evaluate_library(lstm_lib, test_loader)
+y_pred_rnn_lib, y_test_lib = evaluate_library(rnn_lib, test_loader)
+y_pred_gru_lib, _ = evaluate_library(gru_lib, test_loader)
+y_pred_lstm_lib, _ = evaluate_library(lstm_lib, test_loader)
 
 models = {
     'RNN (ручная)': y_pred_rnn_man,

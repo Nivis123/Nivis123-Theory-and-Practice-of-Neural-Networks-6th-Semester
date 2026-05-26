@@ -224,34 +224,34 @@ plt.show()
 
 # Библиотечная реализация (sklearn)
 
-# print("\n--- Обучение библиотечного MLPRegressor (sklearn) ---")
-# mlp_reg_sk = MLPRegressor(hidden_layer_sizes=(64, 32), activation='relu',
-#                           solver='adam', learning_rate_init=0.001,
-#                           max_iter=200, batch_size=32, random_state=42, verbose=False)
-# mlp_reg_sk.fit(X_train, y_train.ravel())
+print("\n--- Обучение библиотечного MLPRegressor (sklearn) ---")
+mlp_reg_sk = MLPRegressor(hidden_layer_sizes=(64, 32), activation='relu',
+                          solver='adam', learning_rate_init=0.001,
+                          max_iter=200, batch_size=32, random_state=42, verbose=False)
+mlp_reg_sk.fit(X_train, y_train.ravel())
 
-# y_train_pred_sk = scaler_y.inverse_transform(mlp_reg_sk.predict(X_train).reshape(-1, 1))
-# y_val_pred_sk = scaler_y.inverse_transform(mlp_reg_sk.predict(X_val).reshape(-1, 1))
-# y_test_pred_sk = scaler_y.inverse_transform(mlp_reg_sk.predict(X_test).reshape(-1, 1))
+y_train_pred_sk = scaler_y.inverse_transform(mlp_reg_sk.predict(X_train).reshape(-1, 1))
+y_val_pred_sk = scaler_y.inverse_transform(mlp_reg_sk.predict(X_val).reshape(-1, 1))
+y_test_pred_sk = scaler_y.inverse_transform(mlp_reg_sk.predict(X_test).reshape(-1, 1))
 
-# mse_train_sk, mae_train_sk, r2_train_sk = calc_metrics(y_train_true, y_train_pred_sk)
-# mse_val_sk, mae_val_sk, r2_val_sk = calc_metrics(y_val_true, y_val_pred_sk)
-# mse_test_sk, mae_test_sk, r2_test_sk = calc_metrics(y_test_true, y_test_pred_sk)
+mse_train_sk, mae_train_sk, r2_train_sk = calc_metrics(y_train_true, y_train_pred_sk)
+mse_val_sk, mae_val_sk, r2_val_sk = calc_metrics(y_val_true, y_val_pred_sk)
+mse_test_sk, mae_test_sk, r2_test_sk = calc_metrics(y_test_true, y_test_pred_sk)
 
-# print("\nРезультаты библиотечного MLPRegressor:")
-# print(f"  Train: MSE = {mse_train_sk:.2f}, MAE = {mae_train_sk:.2f}, R2 = {r2_train_sk:.4f}")
-# print(f"  Val:   MSE = {mse_val_sk:.2f}, MAE = {mae_val_sk:.2f}, R2 = {r2_val_sk:.4f}")
-# print(f"  Test:  MSE = {mse_test_sk:.2f}, MAE = {mae_test_sk:.2f}, R2 = {r2_test_sk:.4f}")
+print("\nРезультаты библиотечного MLPRegressor:")
+print(f"  Train: MSE = {mse_train_sk:.2f}, MAE = {mae_train_sk:.2f}, R2 = {r2_train_sk:.4f}")
+print(f"  Val:   MSE = {mse_val_sk:.2f}, MAE = {mae_val_sk:.2f}, R2 = {r2_val_sk:.4f}")
+print(f"  Test:  MSE = {mse_test_sk:.2f}, MAE = {mae_test_sk:.2f}, R2 = {r2_test_sk:.4f}")
 
 
-# print("\n--- Сравнение метрик на тестовой выборке ---")
-# comparison = pd.DataFrame({
-#     'Модель': ['Собственная', 'sklearn'],
-#     'MSE': [mse_test, mse_test_sk],
-#     'MAE': [mae_test, mae_test_sk],
-#     'R2': [r2_test, r2_test_sk]
-# })
-# print(comparison.to_string(index=False))
+print("\n--- Сравнение метрик на тестовой выборке ---")
+comparison = pd.DataFrame({
+    'Модель': ['Собственная', 'sklearn'],
+    'MSE': [mse_test, mse_test_sk],
+    'MAE': [mae_test, mae_test_sk],
+    'R2': [r2_test, r2_test_sk]
+})
+print(comparison.to_string(index=False))
 
 
 # 2.2 МНОГОСЛОЙНЫЙ ПЕРСЕПТРОН-КЛАССИФИКАТОР (Ожирение)
@@ -372,39 +372,39 @@ plt.show()
 
 
 
-# print("\n--- Обучение библиотечного MLPClassifier (sklearn) ---")
-# mlp_clf_sk = MLPClassifier(hidden_layer_sizes=(64, 32), activation='relu',
-#                            solver='adam', learning_rate_init=0.001,
-#                            max_iter=200, batch_size=32, random_state=42, verbose=False)
-# mlp_clf_sk.fit(X_train_ob, y_train_ob)
+print("\n--- Обучение библиотечного MLPClassifier (sklearn) ---")
+mlp_clf_sk = MLPClassifier(hidden_layer_sizes=(64, 32), activation='relu',
+                           solver='adam', learning_rate_init=0.001,
+                           max_iter=200, batch_size=32, random_state=42, verbose=False)
+mlp_clf_sk.fit(X_train_ob, y_train_ob)
 
-# y_train_pred_sk = mlp_clf_sk.predict(X_train_ob)
-# y_val_pred_sk = mlp_clf_sk.predict(X_val_ob)
-# y_test_pred_sk = mlp_clf_sk.predict(X_test_ob)
+y_train_pred_sk = mlp_clf_sk.predict(X_train_ob)
+y_val_pred_sk = mlp_clf_sk.predict(X_val_ob)
+y_test_pred_sk = mlp_clf_sk.predict(X_test_ob)
 
-# acc_train_sk = accuracy_score(y_train_ob, y_train_pred_sk)
-# acc_val_sk = accuracy_score(y_val_ob, y_val_pred_sk)
-# acc_test_sk = accuracy_score(y_test_ob, y_test_pred_sk)
-# cm_test_sk = confusion_matrix(y_test_ob, y_test_pred_sk)
-# report = classification_report(y_test_ob, y_test_pred_sk, output_dict=True)
-# prec_sk = report['macro avg']['precision']
-# rec_sk = report['macro avg']['recall']
+acc_train_sk = accuracy_score(y_train_ob, y_train_pred_sk)
+acc_val_sk = accuracy_score(y_val_ob, y_val_pred_sk)
+acc_test_sk = accuracy_score(y_test_ob, y_test_pred_sk)
+cm_test_sk = confusion_matrix(y_test_ob, y_test_pred_sk)
+report = classification_report(y_test_ob, y_test_pred_sk, output_dict=True)
+prec_sk = report['macro avg']['precision']
+rec_sk = report['macro avg']['recall']
 
-# print(f"\nРезультаты библиотечного MLPClassifier:")
-# print(f"  Train accuracy: {acc_train_sk:.4f}")
-# print(f"  Val accuracy:   {acc_val_sk:.4f}")
-# print(f"  Test accuracy:  {acc_test_sk:.4f}")
-# print(f"  Macro Precision: {prec_sk:.4f}, Recall: {rec_sk:.4f}")
-# print("Confusion matrix (test):\n", cm_test_sk)
+print(f"\nРезультаты библиотечного MLPClassifier:")
+print(f"  Train accuracy: {acc_train_sk:.4f}")
+print(f"  Val accuracy:   {acc_val_sk:.4f}")
+print(f"  Test accuracy:  {acc_test_sk:.4f}")
+print(f"  Macro Precision: {prec_sk:.4f}, Recall: {rec_sk:.4f}")
+print("Confusion matrix (test):\n", cm_test_sk)
 
 
-# print("\n--- Сравнение метрик на тестовой выборке ---")
-# comparison_clf = pd.DataFrame({
-#     'Модель': ['Собственная', 'sklearn'],
-#     'Accuracy': [acc_test_own, acc_test_sk],
-#     'Precision (macro)': [prec_own, prec_sk],
-#     'Recall (macro)': [rec_own, rec_sk],
-# })
+print("\n--- Сравнение метрик на тестовой выборке ---")
+comparison_clf = pd.DataFrame({
+    'Модель': ['Собственная', 'sklearn'],
+    'Accuracy': [acc_test_own, acc_test_sk],
+    'Precision (macro)': [prec_own, prec_sk],
+    'Recall (macro)': [rec_own, rec_sk],
+})
 print(comparison_clf.to_string(index=False))
 
 
